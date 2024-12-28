@@ -31,7 +31,7 @@ jobs:
       with:
         chrome-version: latest
 
-    # Instalar dependências do Chrome (substituindo libasound2 por libasound2t64)
+    # Instalar dependências do Chrome
     - name: Install dependencies for Chrome
       run: |
         sudo apt-get update
@@ -48,17 +48,21 @@ jobs:
           libxrandr2 \
           libpango-1.0-0 \
           libcups2 \
-          libnss3-tools
+          libnss3-tools \
+          xvfb
 
-    # Configurar permissões do Chrome sandbox
-    - name: Configure Chrome sandbox permissions
-      run: sudo sysctl -w kernel.unprivileged_userns_clone=1
+    # Configurar e iniciar o Xvfb
+    - name: Start Xvfb
+      run: |
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
 
     # Executar testes
     - name: Run tests
       run: npm run test
       env:
         CHROME_BIN: google-chrome-stable
+        DISPLAY: :99
 
     # Configurar JDK para SonarCloud
     - name: Set up JDK 11
