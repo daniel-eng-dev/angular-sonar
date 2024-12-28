@@ -76,6 +76,12 @@ jobs:
         path: ~/.sonar/cache
         key: ${{ runner.os }}-sonar
 
+    # Garantir que o Java 17 está sendo usado para o SonarScanner
+    - name: Set JAVA_HOME to JDK 17
+      run: |
+        echo "JAVA_HOME=$(which java)" >> $GITHUB_ENV
+        java -version
+
     - name: Run SonarCloud Scanner
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
